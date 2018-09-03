@@ -15,7 +15,14 @@
  */
 export const encode = object => {
   // Enter your solution here
+  const sortedKeys = Object.keys(object).sort();
+  const json = JSON.stringify(object, sortedKeys);
+  return Buffer.from(json);
 
+// return Buffer.from(btoa(JSON.stringify(object)))
+
+  // var encodedData = window.btoa('Hello, world');
+  // return encodedData;
 };
 
 /**
@@ -28,6 +35,6 @@ export const encode = object => {
  *   base64 string -> Buffer -> JSON string -> object
  */
 export const decode = base64Str => {
-  // Your code here
 
+  return JSON.parse(Buffer.from(base64Str, 'base64').toString());
 };

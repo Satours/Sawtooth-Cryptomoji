@@ -11,7 +11,12 @@ import { randomBytes, createHash } from 'crypto';
  */
 export const createPrivateKey = () => {
   // Enter your solution here
+  let privateKey = null;
+  do {
+    privateKey = randomBytes(32);
+  } while (!secp256k1.privateKeyVerify(privateKey));
 
+return privateKey.toString('hex');
 };
 
 /**
@@ -20,7 +25,10 @@ export const createPrivateKey = () => {
  */
 export const getPublicKey = privateKey => {
   // Your code here
-
+  let publicKey
+	publicKey = secp256k1.publicKeyCreate(Buffer.from(privateKey,'hex'))
+	
+	return publicKey.toString('hex')
 };
 
 /**
@@ -40,7 +48,13 @@ export const getPublicKey = privateKey => {
  */
 export const createKeys = () => {
   // Your code here
-
+  let privKey = createPrivateKey();
+  let publicKey = getPublicKey(privKey);
+  const keys = {
+    privateKey : privKey, 
+    publicKey : publicKey
+  }
+  return keys
 };
 
 /**
@@ -49,5 +63,28 @@ export const createKeys = () => {
  */
 export const sign = (privateKey, message) => {
   // Your code here
+  // const { signature } = secp256k1.sign(sha256(message), toBytes(privateKey));
+  // return signature.toString('hex');
 
+  console.log(message)
+	const hash = createHash('sha256');
+	if (message)
+	{
+	   console.log('true')
+   	   hash.update(Buffer.from(message))
+	   //console.log(hash.digest('hex'))
+    }
+ 	else 
+	{
+    	   console.log('Error')
+  	}
+	console.log('Before')
+	let msg = Buffer.from(hash.digest('hex'), 'hex')
+	//hash.update(privateKey)
+	let privKey = Buffer.from(privateKey, 'hex')
+	let sigObj = secp256k1.sign(msg, privKey)
+	console.log('After')
+	let sig = Buffer.toString(sigObj.signature)
+	//console.log(sigObj.signature.buffer.toString())
+	return sigObj.signature.toString('hex')
 };
