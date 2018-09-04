@@ -17,7 +17,9 @@
  */
 const encode = object => {
   // Enter your solution here
-
+  const sortedKeys = Object.keys(object).sort();
+  const json = JSON.stringify(object, sortedKeys);
+  return Buffer.from(json);
 };
 
 /**
@@ -26,7 +28,7 @@ const encode = object => {
  */
 const decode = buffer => {
   // Your code here
-
+  return JSON.parse(buffer);
 };
 
 module.exports = {
